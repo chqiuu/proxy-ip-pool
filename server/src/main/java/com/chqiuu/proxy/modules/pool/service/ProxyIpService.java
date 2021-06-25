@@ -2,6 +2,7 @@ package com.chqiuu.proxy.modules.pool.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.chqiuu.proxy.downloader.model.ProxyIp;
 import com.chqiuu.proxy.modules.pool.dto.ProxyIpDetailDTO;
 import com.chqiuu.proxy.modules.pool.dto.ProxyIpListDTO;
 import com.chqiuu.proxy.modules.pool.entity.ProxyIpEntity;
@@ -42,6 +43,7 @@ public interface ProxyIpService extends IService<ProxyIpEntity> {
      */
     IPage<ProxyIpListDTO> getPage(ProxyIpPageQuery query);
 
+    void saveBatchProxyIp(List<ProxyIp> proxyIps);
     /**
      * 代理IP批量校验，删除无用IP
      */
@@ -53,4 +55,6 @@ public interface ProxyIpService extends IService<ProxyIpEntity> {
      * @param entities 实体类列表
      */
     void validateBatch(List<ProxyIpEntity> entities);
+
+
 }

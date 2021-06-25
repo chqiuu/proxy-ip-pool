@@ -1,21 +1,13 @@
 package com.chqiuu.proxy.downloader;
 
+import com.chqiuu.proxy.common.util.NetworkUtil;
 import com.chqiuu.proxy.downloader.model.ProxyIp;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +31,7 @@ public class ShenjidailiProxyIpDownloader extends ProxyIpDownloader {
     @Override
     public List<ProxyIp> downloadProxyIps() {
         List<ProxyIp> proxyIps = new ArrayList<>();
-        String body = getBody(this.localIp);
+        String body = NetworkUtil.get(URL, this.localIp);
         if (null == body) {
             return null;
         }
@@ -86,39 +78,6 @@ public class ShenjidailiProxyIpDownloader extends ProxyIpDownloader {
             proxyIps.add(proxyIp);
         }
         return proxyIps;
-    }
-
-    private String getBody(String localIp) {
-        RequestConfig.Builder builder = RequestConfig.custom();
-        InetAddress localAddress = getLocalAddress(localIp);
-        if (localAddress != null) {
-            builder.setLocalAddress(localAddress);
-        }
-        RequestConfig config = builder.build();
-        HttpGet request = new HttpGet(URL);
-        //设置请求头，将爬虫伪装成浏览器
-        request.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");
-        request.setConfig(config);
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            CloseableHttpResponse response = httpClient.execute(request);
-            return EntityUtils.toString(response.getEntity(), "UTF-8");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private InetAddress getLocalAddress(String localIp) {
-        String[] ipStr = localIp.split("\\.");
-        byte[] localAddressByte = new byte[4];
-        for (int i = 0; i < 4; i++) {
-            localAddressByte[i] = (byte) (Integer.parseInt(ipStr[i]) & 0xff);
-        }
-        try {
-            return InetAddress.getByAddress(localAddressByte);
-        } catch (UnknownHostException e) {
-            return null;
-        }
     }
 }
 

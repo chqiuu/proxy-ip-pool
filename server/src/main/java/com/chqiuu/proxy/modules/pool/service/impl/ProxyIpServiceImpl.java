@@ -1,9 +1,11 @@
 package com.chqiuu.proxy.modules.pool.service.impl;
 
-import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.chqiuu.proxy.common.util.NetworkUtil;
+import com.chqiuu.proxy.config.ProxyProperties;
+import com.chqiuu.proxy.downloader.model.ProxyIp;
 import com.chqiuu.proxy.modules.pool.dto.ProxyIpDetailDTO;
 import com.chqiuu.proxy.modules.pool.dto.ProxyIpListDTO;
 import com.chqiuu.proxy.modules.pool.entity.ProxyIpEntity;
@@ -34,9 +36,9 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity> implements ProxyIpService {
-
+    private final ProxyProperties proxyProperties;
     private final ProxyIpManager proxyIpManager;
-    private final static int MAX_TEST_URL_COUNT = 10;
+    private final static int MAX_TEST_URL_COUNT = 4;
 
     @Override
     public ProxyIpDetailDTO getDetailById(String proxyId) {
@@ -52,6 +54,11 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
     public IPage<ProxyIpListDTO> getPage(ProxyIpPageQuery query) {
         Page<ProxyIpListDTO> pageInfo = new Page<>(query.getCurrent(), query.getSize());
         return this.baseMapper.getPage(pageInfo, query);
+    }
+
+    @Override
+    public void saveBatchProxyIp(List<ProxyIp> proxyIps) {
+        proxyIps.forEach(proxyIp -> this.baseMapper.insertIgnore(proxyIp.convertToEntity()));
     }
 
     @Override
@@ -76,7 +83,7 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
      */
     private List<String> getTestUrls() {
         List<String> urls = new ArrayList<>();
-        String body = HttpUtil.get("https://blog.csdn.net/QIU176161650/article/list");
+        String body = NetworkUtil.get("https://blog.csdn.net/QIU176161650/article/list", proxyProperties.getLocalIp());
         Document document = Jsoup.parse(body);
         Elements articleElements = document.select("div.article-list > div > h4 > a");
         for (Element articleElement : articleElements) {

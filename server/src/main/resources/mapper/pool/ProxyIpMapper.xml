@@ -1,43 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.chqiuu.proxy.modules.pool.mapper.ProxyIpMapper" >
+<mapper namespace="com.chqiuu.proxy.modules.pool.mapper.ProxyIpMapper">
     <!-- 代理IP 表名：`proxy_ip` -->
     <sql id="Base_Column_List">
-        `proxy_id`,`ip_address`,`ip_port`,`country`,`location`,`https`,`http`,`anonymity`,`available`,`last_validate_time`,`validate_count`,`available_count`,`un_available_count`,`failure_time`,`use_times`,`available_rate`,`use_size`,`fail_size`,`create_time`,`update_time`
+        `proxy_id`
+        ,`ip_address`,`ip_port`,`country`,`location`,`https`,`http`,`anonymity`,`available`,`last_validate_time`,`validate_count`,`available_count`,`un_available_count`,`failure_time`,`use_times`,`available_rate`,`use_size`,`fail_size`,`create_time`,`update_time`
     </sql>
     <sql id="Base_PI_Column_List">
-        pi.`proxy_id`,pi.`ip_address`,pi.`ip_port`,pi.`country`,pi.`location`,pi.`https`,pi.`http`,pi.`anonymity`,pi.`available`,pi.`last_validate_time`,pi.`validate_count`,pi.`available_count`,pi.`un_available_count`,pi.`failure_time`,pi.`use_times`,pi.`available_rate`,pi.`use_size`,pi.`fail_size`,pi.`create_time`,pi.`update_time`
+        pi
+        .
+        `proxy_id`
+        ,pi.`ip_address`,pi.`ip_port`,pi.`country`,pi.`location`,pi.`https`,pi.`http`,pi.`anonymity`,pi.`available`,pi.`last_validate_time`,pi.`validate_count`,pi.`available_count`,pi.`un_available_count`,pi.`failure_time`,pi.`use_times`,pi.`available_rate`,pi.`use_size`,pi.`fail_size`,pi.`create_time`,pi.`update_time`
     </sql>
 
     <!-- 可根据自己的需求，是否要使用 -->
     <resultMap id="BaseResultMap" type="com.chqiuu.proxy.modules.pool.entity.ProxyIpEntity">
-        <result property="proxyId" column="proxy_id" />
-        <result property="ipAddress" column="ip_address" />
-        <result property="ipPort" column="ip_port" />
-        <result property="country" column="country" />
-        <result property="location" column="location" />
-        <result property="https" column="https" />
-        <result property="http" column="http" />
-        <result property="anonymity" column="anonymity" />
-        <result property="available" column="available" />
-        <result property="lastValidateTime" column="last_validate_time" />
-        <result property="validateCount" column="validate_count" />
-        <result property="availableCount" column="available_count" />
-        <result property="unAvailableCount" column="un_available_count" />
-        <result property="failureTime" column="failure_time" />
-        <result property="useTimes" column="use_times" />
-        <result property="availableRate" column="available_rate" />
-        <result property="useSize" column="use_size" />
-        <result property="failSize" column="fail_size" />
-        <result property="createTime" column="create_time" />
-        <result property="updateTime" column="update_time" />
+        <result property="proxyId" column="proxy_id"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="ipPort" column="ip_port"/>
+        <result property="country" column="country"/>
+        <result property="location" column="location"/>
+        <result property="https" column="https"/>
+        <result property="http" column="http"/>
+        <result property="anonymity" column="anonymity"/>
+        <result property="available" column="available"/>
+        <result property="lastValidateTime" column="last_validate_time"/>
+        <result property="validateCount" column="validate_count"/>
+        <result property="availableCount" column="available_count"/>
+        <result property="unAvailableCount" column="un_available_count"/>
+        <result property="failureTime" column="failure_time"/>
+        <result property="useTimes" column="use_times"/>
+        <result property="availableRate" column="available_rate"/>
+        <result property="useSize" column="use_size"/>
+        <result property="failSize" column="fail_size"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
     </resultMap>
 
     <!--根据唯一ID获取详细信息-->
     <select id="getDetailById" resultType="com.chqiuu.proxy.modules.pool.dto.ProxyIpDetailDTO">
         SELECT
         <include refid="Base_PI_Column_List"/>
-        FROM `proxy_ip` AS pi where pi.`proxy_id` =  #{proxyId}
+        FROM `proxy_ip` AS pi where pi.`proxy_id` = #{proxyId}
     </select>
     <!--代理IP列表查询-->
     <select id="getList" parameterType="com.chqiuu.proxy.modules.pool.query.ProxyIpListQuery"
@@ -200,10 +204,20 @@
         </choose>
     </select>
 
+    <!--更新代理IP校验次数-->
+    <update id="addValidateCount">
+        update `proxy_ip` set `last_validate_time`=NOW()
+        ,`validate_count`=`validate_count`+#{validateCount}
+        ,`available_count`=`available_count`+#{availableCount}
+        ,`un_available_count`=`un_available_count`+#{unAvailableCount}
+        where `proxy_id` = #{proxyId}
+    </update>
+
     <!--获取需要校验的代理IP-->
     <select id="getValidateProxys" resultType="com.chqiuu.proxy.modules.pool.entity.ProxyIpEntity">
         SELECT
         <include refid="Base_PI_Column_List"/>
-        FROM `proxy_ip` AS pi WHERE `available`=1 AND (`validate_count` <![CDATA[ < ]]> 10 OR pi.`last_validate_time` <![CDATA[ < ]]> DATE_SUB(NOW(), interval 1 week))
+        FROM `proxy_ip` AS pi WHERE `available`=1 AND (`validate_count` <![CDATA[ < ]]> 10 OR pi.`last_validate_time`
+        <![CDATA[ < ]]> DATE_SUB(NOW(), interval 1 week))
     </select>
 </mapper>

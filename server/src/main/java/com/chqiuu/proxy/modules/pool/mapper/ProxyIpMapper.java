@@ -70,4 +70,15 @@ public interface ProxyIpMapper extends BaseMapper<ProxyIpEntity> {
      * 代理池中可用的，校验次数小于10次的或者超过一周时间没有检验的
      */
     List<ProxyIpEntity> getValidateProxys();
+
+    /**
+     * 更新代理IP校验次数
+     *
+     * @param proxyId          唯一ID
+     * @param validateCount    校验次数
+     * @param availableCount   校验可用次数
+     * @param unAvailableCount 校验不可用次数
+     */
+    void addValidateCount(@Param("proxyId") String proxyId, @Param("validateCount") int validateCount
+            , @Param("availableCount") int availableCount, @Param("unAvailableCount") int unAvailableCount);
 }
