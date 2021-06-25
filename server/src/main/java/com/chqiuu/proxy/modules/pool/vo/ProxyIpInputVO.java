@@ -7,8 +7,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import lombok.Data;
-import com.chqiuu.spider.common.validator.group.Default;
-import com.chqiuu.spider.common.validator.group.Update;
+import com.chqiuu.proxy.common.validator.group.Default;
+import com.chqiuu.proxy.common.validator.group.Update;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;
@@ -68,28 +68,28 @@ public class ProxyIpInputVO implements Serializable{
     @NotNull(message = "支持https不能为空", groups = Default.class)
     @Max(value = Integer.MAX_VALUE, message = "支持https不能超过{value}", groups = Default.class)
     @ApiModelProperty(value = "支持https")
-    private Integer https;
+    private Boolean https;
     /**
      * 支持http `http` tinyint(4) DEFAULT 0  COMMENT 支持http
      */
     @NotNull(message = "支持http不能为空", groups = Default.class)
     @Max(value = Integer.MAX_VALUE, message = "支持http不能超过{value}", groups = Default.class)
     @ApiModelProperty(value = "支持http")
-    private Integer http;
+    private Boolean http;
     /**
      * 匿名性 `anonymity` tinyint(4) DEFAULT 0  COMMENT 匿名性
      */
     @NotNull(message = "匿名性不能为空", groups = Default.class)
     @Max(value = Integer.MAX_VALUE, message = "匿名性不能超过{value}", groups = Default.class)
     @ApiModelProperty(value = "匿名性")
-    private Integer anonymity;
+    private Boolean anonymity;
     /**
      * 可用性 `available` tinyint(4) DEFAULT 0  COMMENT 可用性
      */
     @NotNull(message = "可用性不能为空", groups = Default.class)
     @Max(value = Integer.MAX_VALUE, message = "可用性不能超过{value}", groups = Default.class)
     @ApiModelProperty(value = "可用性")
-    private Integer available;
+    private Boolean available;
     /**
      * 最近校验时间 `last_validate_time` datetime  COMMENT 最近校验时间
      */

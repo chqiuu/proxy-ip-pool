@@ -1,5 +1,5 @@
 server:
-  port: 1202
+  port: 1203
   error:
     path: /error
   servlet:
@@ -56,6 +56,7 @@ spring:
         reset-enable: true
 
 logging:
+  config: classpath:logback-test.xml
   file:
     name: logs\proxy_log.log
   level:
@@ -77,3 +78,6 @@ mybatis-plus:
     jdbc-type-for-null: null
     default-statement-timeout: 900
     #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+proxy:
+  local-ip: 192.168.2.103

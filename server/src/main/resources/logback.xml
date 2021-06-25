@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="false" debug="false">
+    <!--  配置对日志信息进行脱敏
+    <conversionRule conversionWord="msg" converterClass="com.***.***.common.utils.SensitiveConverter"/>
+     -->
+    <property name="LOG_HOME" value="logs" />
+    <timestamp key="byDay" datePattern="yyyy-MM-dd" />
+    <!-- appender 定义指定文件名称的输出 -->
+    <appender name="RootFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--当前日志存放路径为 /opt/log/aaa.log -->
+        <file>${LOG_HOME}/aaa.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--启用压缩 fileNamePattern的后缀名设置为压缩格式 eg: aaa.log.-2021-02-23_11.0.log.gz-->
+            <fileNamePattern>${LOG_HOME}/aaa.log.-%d{yyyy-MM-dd_HH}.%i.log.gz</fileNamePattern>
+            <!-- 对单文件大小的判断，当超过maxFileSize中指定大大小（50M）时，文件名中的变量%i会加1 -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>50MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <!-- 日志格式: [AAA_LOG] 08:32:41.348 [com.***.***.aaa.java:1278] - 日志message -->
+            <pattern>[AAA_LOG] %d{HH:mm:ss.SSS} [%logger{80}.%method:%line] - %msg%n</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+        <append>true</append>
+        <prudent>false</prudent>
+        <!--过滤器指定该类的日志级别,过滤掉所有低于INFO级别的日志（过滤器过滤的基础是在root标签的配置基础上进行的）-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <!-- 日志级别排序为： TRACE < DEBUG < INFO < WARN < ERROR -->
+            <level>info</level>
+        </filter>
+    </appender>
+    <root>
+        <!--打印INFO级别及以上的日志-->
+        <level value="info" />
+        <!-- 配置对RootFileAppender的引用 -->
+        <appender-ref ref="RootFileAppender" />
+    </root>
+    <!-- 设置指定的某个类的日志等级 -->
+    <logger name="org.apache.zookeeper.ClientCnxn">
+        <level value="error" />
+    </logger>
+    <logger name="org.apache.activemq">
+        <level value="info" />
+    </logger>
+</configuration>

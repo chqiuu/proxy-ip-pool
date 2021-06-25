@@ -35,9 +35,4 @@ public class BaseErrorController implements ErrorController {
         // 未获取到错误类型时，渲染error模板
         return "error/404";
     }
-
-    @Override
-    public String getErrorPath() {
-        return "/error";
-    }
 }

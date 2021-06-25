@@ -199,4 +199,11 @@
             </otherwise>
         </choose>
     </select>
+
+    <!--获取需要校验的代理IP-->
+    <select id="getValidateProxys" resultType="com.chqiuu.proxy.modules.pool.entity.ProxyIpEntity">
+        SELECT
+        <include refid="Base_PI_Column_List"/>
+        FROM `proxy_ip` AS pi WHERE `available`=1 AND (`validate_count` <![CDATA[ < ]]> 10 OR pi.`last_validate_time` <![CDATA[ < ]]> DATE_SUB(NOW(), interval 1 week))
+    </select>
 </mapper>

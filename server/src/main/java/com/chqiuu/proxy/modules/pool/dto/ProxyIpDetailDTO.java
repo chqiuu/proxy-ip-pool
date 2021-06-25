@@ -51,22 +51,22 @@ public class ProxyIpDetailDTO implements Serializable{
      * 支持https `https` tinyint(4) DEFAULT 0  COMMENT 支持https
      */
     @ApiModelProperty(value = "支持https")
-    private Integer https;
+    private Boolean https;
     /**
      * 支持http `http` tinyint(4) DEFAULT 0  COMMENT 支持http
      */
     @ApiModelProperty(value = "支持http")
-    private Integer http;
+    private Boolean http;
     /**
      * 匿名性 `anonymity` tinyint(4) DEFAULT 0  COMMENT 匿名性
      */
     @ApiModelProperty(value = "匿名性")
-    private Integer anonymity;
+    private Boolean anonymity;
     /**
      * 可用性 `available` tinyint(4) DEFAULT 0  COMMENT 可用性
      */
     @ApiModelProperty(value = "可用性")
-    private Integer available;
+    private Boolean available;
     /**
      * 最近校验时间 `last_validate_time` datetime  COMMENT 最近校验时间
      */
