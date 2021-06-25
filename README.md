@@ -5,6 +5,7 @@
 | 代理名称 | 地址 |
 |:--------:| -------------:|
 |快代理 | https://www.kuaidaili.com/free/|
+|神鸡代理 | http://www.shenjidaili.com/product/open/|
 |ProxyList+ | https://list.proxylistplus.com/|
 |免费代理IP | http://ip.yqie.com/ipproxy.htm|
 |66免费代理 | http://www.66ip.cn/|
@@ -22,7 +23,6 @@
 |高可用全球免费代理库 | https://ip.jiangxianli.com/|
 |米扑代理 | https://proxy.mimvp.com/freesecret|
 |Pzzqz | https://pzzqz.com/|
-|神鸡代理 | http://www.shenjidaili.com/product/open/|
 
 
 https://github1s.com/chenerzhu/proxy-pool/blob/HEAD/README.md

@@ -74,7 +74,7 @@ public class ShenjidailiProxyIpDownloader extends ProxyIpDownloader {
                 proxyIp.setAvailable(true);
             }
             proxyIp.setProxyId(String.format("%s:%s", proxyIp.getIpAddress(), proxyIp.getIpPort()));
-            log.info("代理IP {}", proxyIp);
+            proxyIp.setDataSources("shenjidaili");
             proxyIps.add(proxyIp);
         }
         return proxyIps;
