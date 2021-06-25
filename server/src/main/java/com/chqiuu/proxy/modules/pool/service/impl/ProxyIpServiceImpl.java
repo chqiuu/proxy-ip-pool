@@ -63,7 +63,7 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
 
     @Override
     public void validateBatch() {
-        validateBatch(this.baseMapper.getValidateProxys());
+        validateBatch(this.baseMapper.getValidateProxys(MAX_TEST_URL_COUNT));
     }
 
     @Override

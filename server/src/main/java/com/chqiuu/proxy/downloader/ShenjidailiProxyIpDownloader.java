@@ -40,7 +40,7 @@ public class ShenjidailiProxyIpDownloader extends ProxyIpDownloader {
         ProxyIp proxyIp = new ProxyIp();
         for (Element rowElement : ipElements) {
             if ("免费ip".equals(rowElement.selectFirst("td").text().trim())) {
-                log.info("表头跳过{}", rowElement);
+                // 表头跳过
                 continue;
             }
             proxyIp = new ProxyIp();
@@ -73,9 +73,11 @@ public class ShenjidailiProxyIpDownloader extends ProxyIpDownloader {
                 }
                 proxyIp.setAvailable(true);
             }
-            proxyIp.setProxyId(String.format("%s:%s", proxyIp.getIpAddress(), proxyIp.getIpPort()));
-            proxyIp.setDataSources("shenjidaili");
-            proxyIps.add(proxyIp);
+            if (proxyIp.getIpAddress() != null) {
+                proxyIp.setProxyId(String.format("%s:%s", proxyIp.getIpAddress(), proxyIp.getIpPort()));
+                proxyIp.setDataSources("shenjidaili");
+                proxyIps.add(proxyIp);
+            }
         }
         return proxyIps;
     }

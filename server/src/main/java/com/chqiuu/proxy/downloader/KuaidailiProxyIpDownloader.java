@@ -85,9 +85,11 @@ public class KuaidailiProxyIpDownloader extends ProxyIpDownloader {
                 }
                 proxyIp.setAvailable(true);
             }
-            proxyIp.setProxyId(String.format("%s:%s", proxyIp.getIpAddress(), proxyIp.getIpPort()));
-            proxyIp.setDataSources("kuaidaili");
-            proxyIps.add(proxyIp);
+            if (proxyIp.getIpAddress() != null) {
+                proxyIp.setProxyId(String.format("%s:%s", proxyIp.getIpAddress(), proxyIp.getIpPort()));
+                proxyIp.setDataSources("kuaidaili");
+                proxyIps.add(proxyIp);
+            }
         }
         return proxyIps;
     }

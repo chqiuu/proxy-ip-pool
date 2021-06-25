@@ -37,7 +37,7 @@ public class AsyncConfig implements AsyncConfigurer {
         // 定义线程池
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
         // 核心线程数
-        taskExecutor.setCorePoolSize(processors);
+        taskExecutor.setCorePoolSize(processors * 2);
         // 线程池最大线程数,默认：40000
         taskExecutor.setMaxPoolSize(40000);
         // 线程队列最大线程数,默认：80000
