@@ -17,11 +17,14 @@ import java.util.List;
  */
 @Slf4j
 public class FeizhuProxyIpDownloader extends ProxyIpDownloader {
-
+    /**
+     * 来源
+     */
+    private static final String PROXY_DOCMAIN = "feizhuip";
     /**
      * URL
      */
-    private static final String LIST_URL = "https://www.feizhuip.com/News-newsList-catid-8.html";
+    private static final String LIST_URL_TEMPLATE = "https://www.feizhuip.com/News-newsList-catid-8-p-%s.html";
     /**
      * DOMAIN_URL
      */
@@ -30,7 +33,7 @@ public class FeizhuProxyIpDownloader extends ProxyIpDownloader {
     /**
      * 爬取页数
      */
-    private static final int MAX_PAGES = 16;
+    private static final int MAX_PAGES = 2;
 
     public FeizhuProxyIpDownloader() {
         super();
@@ -43,17 +46,17 @@ public class FeizhuProxyIpDownloader extends ProxyIpDownloader {
     @Override
     public List<ProxyIp> downloadProxyIps() {
         List<ProxyIp> proxyIps = new ArrayList<>();
-        String listHtml = NetworkUtil.get(LIST_URL, this.localIp);
-        if (StrUtil.isNotEmpty(listHtml)) {
-            Document document = Jsoup.parse(listHtml);
-            Elements urlElements = document.select("body > div.news-body.clearfix > div > div.news-container > div.news-l.fl > ul > li > a");
-            for (int i = 0; i < urlElements.size(); i++) {
-                if (i > MAX_PAGES) {
-                    break;
+        for (int page = 1; page < MAX_PAGES; page++) {
+            String listHtml = NetworkUtil.get(String.format(LIST_URL_TEMPLATE, page), this.localIp);
+            if (StrUtil.isNotEmpty(listHtml)) {
+                Document document = Jsoup.parse(listHtml);
+                Elements urlElements = document.select("body > div.news-body.clearfix > div > div.news-container > div.news-l.fl > ul > li > a");
+                for (int i = 0; i < urlElements.size(); i++) {
+                    proxyIps.addAll(getProxyIpFromPage(NetworkUtil.get(String.format("%s%s", DOMAIN_URL, urlElements.get(i).attr("href")), this.localIp)));
                 }
-                proxyIps.addAll(getProxyIpFromPage(NetworkUtil.get(String.format("%s%s", DOMAIN_URL, urlElements.get(i).attr("href")), this.localIp)));
             }
         }
+        log.info("downloadProxyIps {} Size {}", PROXY_DOCMAIN, proxyIps.size());
         return proxyIps;
     }
 
@@ -84,7 +87,7 @@ public class FeizhuProxyIpDownloader extends ProxyIpDownloader {
             }
             if (proxyIp.getIpAddress() != null) {
                 proxyIp.setProxyId(String.format("%s:%s", proxyIp.getIpAddress(), proxyIp.getIpPort()));
-                proxyIp.setDataSources("feizhuip");
+                proxyIp.setDataSources(PROXY_DOCMAIN);
                 proxyIps.add(proxyIp);
             }
         }

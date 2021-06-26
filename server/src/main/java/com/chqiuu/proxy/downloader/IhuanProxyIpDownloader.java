@@ -17,7 +17,10 @@ import java.util.List;
  */
 @Slf4j
 public class IhuanProxyIpDownloader extends ProxyIpDownloader {
-
+    /**
+     * 来源
+     */
+    private static final String PROXY_DOCMAIN = "ihuan";
     /**
      * DOMAIN_URL
      */
@@ -25,7 +28,7 @@ public class IhuanProxyIpDownloader extends ProxyIpDownloader {
     /**
      * 爬取页数
      */
-    private static final int MAX_PAGES = 50;
+    private static final int MAX_PAGES = 100;
     /**
      * 当前已抓取页数
      */
@@ -46,6 +49,7 @@ public class IhuanProxyIpDownloader extends ProxyIpDownloader {
         if (StrUtil.isNotEmpty(body)) {
             proxyIps.addAll(getProxyIpFromPage(proxyIps, body));
         }
+        log.info("downloadProxyIps {} Size {}", PROXY_DOCMAIN, proxyIps.size());
         return proxyIps;
     }
 
@@ -95,7 +99,7 @@ public class IhuanProxyIpDownloader extends ProxyIpDownloader {
             }
             if (proxyIp.getIpAddress() != null) {
                 proxyIp.setProxyId(String.format("%s:%s", proxyIp.getIpAddress(), proxyIp.getIpPort()));
-                proxyIp.setDataSources("feizhuip");
+                proxyIp.setDataSources(PROXY_DOCMAIN);
                 proxyIps.add(proxyIp);
             }
         }

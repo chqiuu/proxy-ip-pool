@@ -104,7 +104,12 @@ public class ProxyIpEntity extends Model<ProxyIpEntity>{
      * 代理请求需要总时长 `use_times` int(11)  COMMENT 代理请求需要总时长
      */
     @ApiModelProperty(value = "代理请求需要总时长")
-    private Integer useTimes;
+    private Long useTimes;
+    /**
+     * 代理请求需要平均时长 `avg_use_times` int(11)  COMMENT 代理请求需要平均时长
+     */
+    @ApiModelProperty(value = "代理请求需要平均时长")
+    private Long avgUseTimes;
     /**
      * 可用率 `available_rate` double(6,4)  COMMENT 可用率
      */

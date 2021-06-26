@@ -1,18 +1,16 @@
 package com.chqiuu.proxy.modules.pool.vo;
 
-import java.io.Serializable;
-
+import com.chqiuu.proxy.common.validator.group.Default;
+import com.chqiuu.proxy.common.validator.group.Update;
 import com.chqiuu.proxy.modules.pool.entity.ProxyIpEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
 import lombok.Data;
-import com.chqiuu.proxy.common.validator.group.Default;
-import com.chqiuu.proxy.common.validator.group.Update;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -129,7 +127,7 @@ public class ProxyIpInputVO implements Serializable{
     @NotNull(message = "代理请求需要总时长不能为空", groups = Default.class)
     @Max(value = Integer.MAX_VALUE, message = "代理请求需要总时长不能超过{value}", groups = Default.class)
     @ApiModelProperty(value = "代理请求需要总时长")
-    private Integer useTimes;
+    private Long useTimes;
     /**
      * 可用率 `available_rate` double(6,4)  COMMENT 可用率
      */

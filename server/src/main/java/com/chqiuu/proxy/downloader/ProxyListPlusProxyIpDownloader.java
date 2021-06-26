@@ -16,7 +16,10 @@ import java.util.List;
  */
 @Slf4j
 public class ProxyListPlusProxyIpDownloader extends ProxyIpDownloader {
-
+    /**
+     * 来源
+     */
+    private static final String PROXY_DOCMAIN = "proxylistplus";
     /**
      * 高匿代理URL模板
      */
@@ -46,6 +49,7 @@ public class ProxyListPlusProxyIpDownloader extends ProxyIpDownloader {
             proxyIps.addAll(getProxyIpFromPage(NetworkUtil.get(String.format(INHA_URL_TEMPLATE, i), this.localIp)));
             proxyIps.addAll(getProxyIpFromPage(NetworkUtil.get(String.format(INTR_URL_TEMPLATE, i), this.localIp)));
         }
+        log.info("downloadProxyIps {} Size {}", PROXY_DOCMAIN, proxyIps.size());
         return proxyIps;
     }
 
@@ -86,7 +90,7 @@ public class ProxyListPlusProxyIpDownloader extends ProxyIpDownloader {
                 }
                 if (proxyIp.getIpAddress() != null) {
                     proxyIp.setProxyId(String.format("%s:%s", proxyIp.getIpAddress(), proxyIp.getIpPort()));
-                    proxyIp.setDataSources("proxylistplus");
+                    proxyIp.setDataSources(PROXY_DOCMAIN);
                     proxyIps.add(proxyIp);
                 }
             } catch (NumberFormatException ignored) {

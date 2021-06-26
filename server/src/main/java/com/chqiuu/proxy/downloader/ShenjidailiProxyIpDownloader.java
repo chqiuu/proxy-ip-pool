@@ -18,6 +18,11 @@ import java.util.List;
  */
 @Slf4j
 public class ShenjidailiProxyIpDownloader extends ProxyIpDownloader {
+    /**
+     * 来源
+     */
+    private static final String PROXY_DOCMAIN = "shenjidaili";
+
     private static final String URL = "http://www.shenjidaili.com/product/open/";
 
     public ShenjidailiProxyIpDownloader() {
@@ -75,10 +80,11 @@ public class ShenjidailiProxyIpDownloader extends ProxyIpDownloader {
             }
             if (proxyIp.getIpAddress() != null) {
                 proxyIp.setProxyId(String.format("%s:%s", proxyIp.getIpAddress(), proxyIp.getIpPort()));
-                proxyIp.setDataSources("shenjidaili");
+                proxyIp.setDataSources(PROXY_DOCMAIN);
                 proxyIps.add(proxyIp);
             }
         }
+        log.info("downloadProxyIps {} Size {}", PROXY_DOCMAIN, proxyIps.size());
         return proxyIps;
     }
 }

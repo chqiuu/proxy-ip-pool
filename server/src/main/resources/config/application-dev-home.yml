@@ -1,0 +1,80 @@
+server:
+  port: 1203
+  error:
+    path: /error
+  servlet:
+    context-path: /proxy
+    session:
+      timeout: 3H
+    application-display-name: 代理IP服务
+
+spring:
+  application:
+    name: 代理IP服务-开发环境
+  mvc:
+    view:
+      suffix: .jsp
+  devtools:
+    restart:
+      enabled: true
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 200
+      max-wait: 60000
+      min-evictable-idle-time-millis: 1800000
+      validation-query: select 'x'
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      time-between-eviction-runs-millis: 600000
+      remove-abandoned: true
+      remove-abandoned-timeout-millis: 1800000
+      log-abandoned: true
+      filter:
+        stat:
+          enabled: true
+        wall:
+          enabled: true
+          config:
+            multi-statement-allow: true
+            none-base-statement-allow: true
+        log4j:
+          enabled: true
+      connect-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/proxy_ip_pool?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+      username: root
+      password: root
+      stat-view-servlet:
+        enabled: true
+        login-username: admin
+        login-password: admin
+        url-pattern: /admin/druid/*
+        reset-enable: true
+
+logging:
+  config: classpath:logback-test.xml
+  file:
+    name: logs\proxy_log.log
+  level:
+    root: info # trace < debug < info < warn < error < fatal
+
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*/*Mapper.xml
+  configuration:
+    cache-enabled: true
+    lazy-loading-enabled: true
+    aggressive-lazy-loading: true
+    multiple-result-sets-enabled: true
+    use-column-label: true
+    use-generated-keys: true
+    auto-mapping-behavior: partial
+    default-executor-type: simple
+    map-underscore-to-camel-case: true
+    local-cache-scope: session
+    jdbc-type-for-null: null
+    default-statement-timeout: 900
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

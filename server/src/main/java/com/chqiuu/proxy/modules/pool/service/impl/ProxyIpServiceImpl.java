@@ -59,6 +59,7 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
     @Override
     public void saveBatchProxyIp(List<ProxyIp> proxyIps) {
         proxyIps.forEach(proxyIp -> this.baseMapper.insertIgnore(proxyIp.convertToEntity()));
+
     }
 
     @Override

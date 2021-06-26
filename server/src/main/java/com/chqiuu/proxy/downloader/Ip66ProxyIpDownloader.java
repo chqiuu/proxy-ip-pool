@@ -9,26 +9,17 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 66免费代理 | http://www.66ip.cn/
  */
 @Slf4j
 public class Ip66ProxyIpDownloader extends ProxyIpDownloader {
-
-    protected static Map<String, String> headerMap = new HashMap<String, String>() {{
-        put("Connection", "keep-alive");
-        put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36");
-        put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8; charset=gb2312");
-        put("Accept-Encoding", "gzip, deflate, sdch");
-        put("Content-Type", "text/html; charset=gb2312");
-        put("Accept-Language", "zh-CN,zh;q=0.9");
-        put("Redis-Control", "max-age=0");
-        put("Upgrade-Insecure-Requests", "1");
-    }};
+    /**
+     * 来源
+     */
+    private static final String PROXY_DOCMAIN = "66ip";
     /**
      * 代理URL模板
      */
@@ -58,6 +49,7 @@ public class Ip66ProxyIpDownloader extends ProxyIpDownloader {
                 log.error("{} {}", String.format(URL_TEMPLATE, i), e.getMessage());
             }
         }
+        log.info("downloadProxyIps {} Size {}", PROXY_DOCMAIN, proxyIps.size());
         return proxyIps;
     }
 
@@ -93,7 +85,7 @@ public class Ip66ProxyIpDownloader extends ProxyIpDownloader {
             }
             if (proxyIp.getIpPort() != null) {
                 proxyIp.setProxyId(String.format("%s:%s", proxyIp.getIpAddress(), proxyIp.getIpPort()));
-                proxyIp.setDataSources("kuaidaili");
+                proxyIp.setDataSources(PROXY_DOCMAIN);
                 proxyIps.add(proxyIp);
             }
         }

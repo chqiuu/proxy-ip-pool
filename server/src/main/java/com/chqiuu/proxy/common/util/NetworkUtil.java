@@ -74,10 +74,11 @@ public class NetworkUtil {
      *
      * @param urlString 网址
      * @param localIp   绑定本地IP
+     * @param proxy     代理IP
      * @return 返回内容，如果只检查状态码，正常只返回 ""，不正常返回 null
      */
     public static String get(String urlString, String localIp, HttpHost proxy) {
-        return get(urlString, localIp, proxy, null);
+        return get(urlString, localIp, proxy, null, null);
     }
 
     /**
@@ -86,10 +87,24 @@ public class NetworkUtil {
      * @param urlString 网址
      * @param localIp   绑定本地IP
      * @param proxy     代理IP
+     * @param timeout   超时时间，单位-毫秒
+     * @return 返回内容，如果只检查状态码，正常只返回 ""，不正常返回 null
+     */
+    public static String get(String urlString, String localIp, HttpHost proxy, Integer timeout) {
+        return get(urlString, localIp, proxy, timeout, null);
+    }
+
+    /**
+     * 发送get请求
+     *
+     * @param urlString 网址
+     * @param localIp   绑定本地IP
+     * @param proxy     代理IP
+     * @param timeout   超时时间，单位-毫秒
      * @param headers   Headers数组
      * @return 返回内容，如果只检查状态码，正常只返回 ""，不正常返回 null
      */
-    public static String get(String urlString, String localIp, HttpHost proxy, Map<String, String> headers) {
+    public static String get(String urlString, String localIp, HttpHost proxy, Integer timeout, Map<String, String> headers) {
         RequestConfig.Builder builder = RequestConfig.custom();
         InetAddress localAddress = getLocalAddress(localIp);
         if (localAddress != null) {
@@ -100,6 +115,12 @@ public class NetworkUtil {
         }
         // 设置Cookie策略
         builder.setCookieSpec(CookieSpecs.STANDARD);
+        if (timeout != null) {
+            // 配置请求的超时设置
+            builder.setConnectionRequestTimeout(timeout)
+                    .setConnectTimeout(timeout)
+                    .setSocketTimeout(timeout);
+        }
         RequestConfig config = builder.build();
         HttpGet request = new HttpGet(urlString);
         if (null == headers) {

@@ -22,12 +22,24 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         log.info("启动时自动执行 CommandLineRunner 的 run 方法");
-        // proxyIpService.saveBatchProxyIp(new FeizhuProxyIpDownloader(proxyProperties.getLocalIp()).downloadProxyIps());
+        // saveBatchProxyIp();
+        proxyIpService.validateBatch();
+    }
+
+    private void saveBatchProxyIp() {
+        proxyIpService.saveBatchProxyIp(new FeizhuProxyIpDownloader(proxyProperties.getLocalIp()).downloadProxyIps());
         proxyIpService.saveBatchProxyIp(new IhuanProxyIpDownloader(proxyProperties.getLocalIp()).downloadProxyIps());
         proxyIpService.saveBatchProxyIp(new Ip66ProxyIpDownloader(proxyProperties.getLocalIp()).downloadProxyIps());
-        // proxyIpService.saveBatchProxyIp(new KuaidailiProxyIpDownloader(proxyProperties.getLocalIp()).downloadProxyIps());
-        // proxyIpService.saveBatchProxyIp(new ProxyListPlusProxyIpDownloader(proxyProperties.getLocalIp()).downloadProxyIps());
-        // proxyIpService.saveBatchProxyIp(new ShenjidailiProxyIpDownloader(proxyProperties.getLocalIp()).downloadProxyIps());
-        proxyIpService.validateBatch();
+        proxyIpService.saveBatchProxyIp(new Ip89ProxyIpDownloader(proxyProperties.getLocalIp()).downloadProxyIps());
+        proxyIpService.saveBatchProxyIp(new Ip3366ProxyIpDownloader(proxyProperties.getLocalIp()).downloadProxyIps());
+        proxyIpService.saveBatchProxyIp(new KuaidailiProxyIpDownloader(proxyProperties.getLocalIp()).downloadProxyIps());
+        proxyIpService.saveBatchProxyIp(new KxProxyIpDownloader(proxyProperties.getLocalIp()).downloadProxyIps());
+        proxyIpService.saveBatchProxyIp(new NimaProxyIpDownloader(proxyProperties.getLocalIp()).downloadProxyIps());
+        proxyIpService.saveBatchProxyIp(new ProxyListPlusProxyIpDownloader(proxyProperties.getLocalIp()).downloadProxyIps());
+        proxyIpService.saveBatchProxyIp(new QiyunProxyIpDownloader(proxyProperties.getLocalIp()).downloadProxyIps());
+        proxyIpService.saveBatchProxyIp(new ShenjidailiProxyIpDownloader(proxyProperties.getLocalIp()).downloadProxyIps());
+        proxyIpService.saveBatchProxyIp(new SuperFastProxyIpDownloader(proxyProperties.getLocalIp()).downloadProxyIps());
+        proxyIpService.saveBatchProxyIp(new TaiyangProxyIpDownloader(proxyProperties.getLocalIp()).downloadProxyIps());
+        proxyIpService.saveBatchProxyIp(new XiaosuProxyIpDownloader(proxyProperties.getLocalIp()).downloadProxyIps());
     }
 }

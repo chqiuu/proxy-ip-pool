@@ -17,6 +17,10 @@ import java.util.List;
 @Slf4j
 public class KuaidailiProxyIpDownloader extends ProxyIpDownloader {
     /**
+     * 来源
+     */
+    private static final String PROXY_DOCMAIN = "kuaidaili";
+    /**
      * 高匿代理URL模板
      */
     private static final String INHA_URL_TEMPLATE = "https://www.kuaidaili.com/free/inha/%s/";
@@ -44,6 +48,7 @@ public class KuaidailiProxyIpDownloader extends ProxyIpDownloader {
             proxyIps.addAll(getProxyIpFromPage(NetworkUtil.get(String.format(INHA_URL_TEMPLATE, i), this.localIp)));
             proxyIps.addAll(getProxyIpFromPage(NetworkUtil.get(String.format(INTR_URL_TEMPLATE, i), this.localIp)));
         }
+        log.info("downloadProxyIps {} Size {}", PROXY_DOCMAIN, proxyIps.size());
         return proxyIps;
     }
 
@@ -87,7 +92,7 @@ public class KuaidailiProxyIpDownloader extends ProxyIpDownloader {
             }
             if (proxyIp.getIpAddress() != null) {
                 proxyIp.setProxyId(String.format("%s:%s", proxyIp.getIpAddress(), proxyIp.getIpPort()));
-                proxyIp.setDataSources("kuaidaili");
+                proxyIp.setDataSources(PROXY_DOCMAIN);
                 proxyIps.add(proxyIp);
             }
         }
