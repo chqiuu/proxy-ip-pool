@@ -38,7 +38,7 @@ import java.util.List;
 public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity> implements ProxyIpService {
     private final ProxyProperties proxyProperties;
     private final ProxyIpManager proxyIpManager;
-    private final static int MAX_TEST_URL_COUNT = 4;
+    private final static int MAX_TEST_URL_COUNT = 2;
 
     @Override
     public ProxyIpDetailDTO getDetailById(String proxyId) {

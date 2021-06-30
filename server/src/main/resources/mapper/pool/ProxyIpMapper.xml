@@ -218,6 +218,6 @@
         SELECT
         <include refid="Base_PI_Column_List"/>
         FROM `proxy_ip` AS pi WHERE `available`=1 AND (`validate_count` <![CDATA[ < ]]> #{maxTestCount} OR pi.`last_validate_time`
-        <![CDATA[ < ]]> DATE_SUB(NOW(), interval 1 week))
+        <![CDATA[ < ]]> DATE_SUB(NOW(), INTERVAL 1 DAY))
     </select>
 </mapper>

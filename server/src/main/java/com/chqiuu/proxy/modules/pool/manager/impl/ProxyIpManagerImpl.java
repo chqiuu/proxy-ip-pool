@@ -33,7 +33,7 @@ public class ProxyIpManagerImpl implements ProxyIpManager {
         for (String url : testUrls) {
             startTime = System.currentTimeMillis();
             HttpHost proxy = new HttpHost(entity.getIpAddress(), entity.getIpPort());
-            if (StrUtil.isNotEmpty(NetworkUtil.get(url, proxyProperties.getLocalIp(), proxy, 3000))) {
+            if (StrUtil.isNotEmpty(NetworkUtil.get(url, proxyProperties.getLocalIp(), proxy, 2000))) {
                 // 代理IP连接成功
                 availableCount++;
                 endTime = System.currentTimeMillis();
