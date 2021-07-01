@@ -44,7 +44,7 @@ spring:
         log4j:
           enabled: true
       connect-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-      driver-class-name: com.mysql.jdbc.Driver
+      driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://127.0.0.1:3306/proxy_ip_pool?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
       username: root
       password: root

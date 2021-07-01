@@ -43,6 +43,7 @@ public interface ProxyIpService extends IService<ProxyIpEntity> {
      */
     IPage<ProxyIpListDTO> getPage(ProxyIpPageQuery query);
 
+    void saveBatchProxyIp();
     void saveBatchProxyIp(List<ProxyIp> proxyIps);
     /**
      * 代理IP批量校验，删除无用IP

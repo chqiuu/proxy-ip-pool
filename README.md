@@ -1,5 +1,5 @@
-# proxy-ip-pool
-代理IP池
+# proxy-ip-pool项目
+本项目是基于Springboot+Mysql数据库开发的代理IP数据库池。主要功能：自动采集免费代理IP、定时池中代理IP有效性、提供代理IP对外接口等功能。开箱即用
 
 ### IP来源
 | 代理名称 | 推荐指数 | 地址 | 备注 |

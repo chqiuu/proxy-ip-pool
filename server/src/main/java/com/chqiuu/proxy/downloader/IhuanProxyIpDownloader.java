@@ -75,27 +75,30 @@ public class IhuanProxyIpDownloader extends ProxyIpDownloader {
             proxyIp = new ProxyIp();
             Elements fieldElements = rowElement.select("td");
             for (int i = 0; i < fieldElements.size(); i++) {
-                if (i == 0) {
-                    proxyIp.setIpAddress(fieldElements.get(i).text().trim());
-                } else if (i == 1) {
-                    proxyIp.setIpPort(Integer.valueOf(fieldElements.get(i).text().trim()));
-                } else if (i == 2) {
-                    proxyIp.setCountry(fieldElements.get(i).text().trim().split(" ")[0]);
-                    proxyIp.setLocation(fieldElements.get(i).text().trim());
-                } else if (i == 4) {
-                    if ("支持".equals(fieldElements.get(i).text().trim())) {
-                        proxyIp.setHttps(true);
+                try {
+                    if (i == 0) {
+                        proxyIp.setIpAddress(fieldElements.get(i).text().trim());
+                    } else if (i == 1) {
+                        proxyIp.setIpPort(Integer.valueOf(fieldElements.get(i).text().trim()));
+                    } else if (i == 2) {
+                        proxyIp.setCountry(fieldElements.get(i).text().trim().split(" ")[0]);
+                        proxyIp.setLocation(fieldElements.get(i).text().trim());
+                    } else if (i == 4) {
+                        if ("支持".equals(fieldElements.get(i).text().trim())) {
+                            proxyIp.setHttps(true);
+                        }
+                    } else if (i == 6) {
+                        // 匿名度
+                        if ("高匿".equals(fieldElements.get(i).text().trim())) {
+                            proxyIp.setAnonymity(true);
+                        } else {
+                            proxyIp.setAnonymity(false);
+                        }
                     }
-                } else if (i == 6) {
-                    // 匿名度
-                    if ("高匿".equals(fieldElements.get(i).text().trim())) {
-                        proxyIp.setAnonymity(true);
-                    } else {
-                        proxyIp.setAnonymity(false);
-                    }
+                    proxyIp.setHttp(true);
+                    proxyIp.setAvailable(true);
+                } catch (NumberFormatException ignored) {
                 }
-                proxyIp.setHttp(true);
-                proxyIp.setAvailable(true);
             }
             if (proxyIp.getIpAddress() != null) {
                 proxyIp.setProxyId(String.format("%s:%s", proxyIp.getIpAddress(), proxyIp.getIpPort()));

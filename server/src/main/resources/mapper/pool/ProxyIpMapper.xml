@@ -213,11 +213,11 @@
         where `proxy_id` = #{proxyId}
     </update>
 
-    <!--获取需要校验的代理IP-->
+    <!--获取需要校验的代理IP DAY minute-->
     <select id="getValidateProxys" resultType="com.chqiuu.proxy.modules.pool.entity.ProxyIpEntity">
         SELECT
         <include refid="Base_PI_Column_List"/>
-        FROM `proxy_ip` AS pi WHERE `available`=1 AND (`validate_count` <![CDATA[ < ]]> #{maxTestCount} OR pi.`last_validate_time`
-        <![CDATA[ < ]]> DATE_SUB(NOW(), INTERVAL 1 DAY))
+        FROM `proxy_ip` AS pi WHERE (`validate_count` <![CDATA[ < ]]> #{maxTestCount} OR pi.`last_validate_time`
+        <![CDATA[ < ]]> DATE_SUB(NOW(), INTERVAL 1 DAY)) ORDER BY `available` DESC
     </select>
 </mapper>

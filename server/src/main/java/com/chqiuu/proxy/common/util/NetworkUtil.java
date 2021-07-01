@@ -1,18 +1,33 @@
 package com.chqiuu.proxy.common.util;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpHost;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.DefaultSchemePortResolver;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.impl.routing.DefaultRoutePlanner;
+import org.apache.hc.client5.http.io.HttpClientConnectionManager;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.core5.ssl.SSLContexts;
+import org.apache.hc.core5.ssl.TrustStrategy;
+import org.apache.hc.core5.util.Timeout;
 
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -105,21 +120,18 @@ public class NetworkUtil {
      * @return 返回内容，如果只检查状态码，正常只返回 ""，不正常返回 null
      */
     public static String get(String urlString, String localIp, HttpHost proxy, Integer timeout, Map<String, String> headers) {
+        long startTime = System.currentTimeMillis(), endTime = 0L;
         RequestConfig.Builder builder = RequestConfig.custom();
-        InetAddress localAddress = getLocalAddress(localIp);
-        if (localAddress != null) {
-            builder.setLocalAddress(localAddress);
-        }
         if (proxy != null) {
             builder.setProxy(proxy);
         }
         // 设置Cookie策略
-        builder.setCookieSpec(CookieSpecs.STANDARD);
+        builder.setCookieSpec("standard");
         if (timeout != null) {
-            // 配置请求的超时设置
-            builder.setConnectionRequestTimeout(timeout)
-                    .setConnectTimeout(timeout)
-                    .setSocketTimeout(timeout);
+            // 设置从connect Manager(连接池)获取Connection 超时时间
+            builder.setConnectionRequestTimeout(Timeout.ofMilliseconds(timeout))
+                    // 设置连接超时时间，单位毫秒
+                    .setConnectTimeout(Timeout.ofMilliseconds(timeout));
         }
         RequestConfig config = builder.build();
         HttpGet request = new HttpGet(urlString);
@@ -131,13 +143,46 @@ public class NetworkUtil {
             request.addHeader(key, headers.get(key));
         }
         request.setConfig(config);
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+        if (timeout != null) {
+            // 手动设置Keep-Alive
+            httpClientBuilder.setKeepAliveStrategy((response, context) -> Timeout.ofMilliseconds(timeout));
+        }
+        InetAddress localAddress = getLocalAddress(localIp);
+        if (localAddress != null) {
+            httpClientBuilder.setRoutePlanner(new DefaultRoutePlanner(DefaultSchemePortResolver.INSTANCE) {
+                @SneakyThrows
+                @Override
+                protected InetAddress determineLocalAddress(final HttpHost firstHop, final HttpContext context) {
+                    return localAddress;
+                }
+            });
+        }
+        try (CloseableHttpClient httpClient = httpClientBuilder.setConnectionManager(getHttpClientConnectionManager()).build()) {
             CloseableHttpResponse response = httpClient.execute(request);
             return EntityUtils.toString(response.getEntity(), "UTF-8");
-        } catch (IOException e) {
-            log.error("{} {}", urlString, e.getMessage());
+        } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException | IOException | ParseException e) {
+            endTime = System.currentTimeMillis();
+            log.error("{} {} {}", urlString, endTime - startTime, e.getMessage());
         }
         return null;
+    }
+
+    private static HttpClientConnectionManager getHttpClientConnectionManager() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        return PoolingHttpClientConnectionManagerBuilder.create()
+                .setSSLSocketFactory(getSslConnectionSocketFactory())
+                .build();
+    }
+
+    /**
+     * 支持SSL
+     *
+     * @return SSLConnectionSocketFactory
+     */
+    private static SSLConnectionSocketFactory getSslConnectionSocketFactory() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        TrustStrategy acceptingTrustStrategy = (x509Certificates, s) -> true;
+        SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
+        return new SSLConnectionSocketFactory(sslContext, new NoopHostnameVerifier());
     }
 
     private static InetAddress getLocalAddress(String localIp) {
