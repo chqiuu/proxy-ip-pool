@@ -168,7 +168,7 @@ public class NetworkUtil {
             return EntityUtils.toString(response.getEntity(), "UTF-8");
         } catch (IOException | ParseException e) {
             endTime = System.currentTimeMillis();
-            log.error("{} {} {} {}", urlString, proxy, endTime - startTime, e.getMessage());
+            log.warn("{} {} {} {}", urlString, proxy, endTime - startTime, e.getMessage());
         }
         return null;
     }
@@ -220,7 +220,7 @@ public class NetworkUtil {
             return httpClient.execute(request).getCode();
         } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException | IOException e) {
             endTime = System.currentTimeMillis();
-            log.error("{} {} {}", urlString, endTime - startTime, e.getMessage());
+            log.warn("{} {} {}", urlString, endTime - startTime, e.getMessage());
         }
         return -1;
     }

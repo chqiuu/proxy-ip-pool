@@ -116,6 +116,7 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
         QueryWrapper<ProxyIpEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.gt("validate_count", 0);
         queryWrapper.eq("available", 1);
+        queryWrapper.orderByAsc("last_validate_time");
         batchValidateAvailableProxyIp(this.baseMapper.selectList(queryWrapper));
     }
 
@@ -141,6 +142,7 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
         QueryWrapper<ProxyIpEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.gt("validate_count", 0);
         queryWrapper.eq("available", 0);
+        queryWrapper.orderByAsc("last_validate_time");
         batchValidateUnavailableProxyIp(this.baseMapper.selectList(queryWrapper));
     }
 
