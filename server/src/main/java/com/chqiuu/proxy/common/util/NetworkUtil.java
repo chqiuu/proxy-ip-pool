@@ -119,6 +119,7 @@ public class NetworkUtil {
      * @param headers   Headers数组
      * @return 返回内容，如果只检查状态码，正常只返回 ""，不正常返回 null
      */
+    @SneakyThrows
     public static String get(String urlString, String localIp, HttpHost proxy, Integer timeout, Map<String, String> headers) {
         long startTime = System.currentTimeMillis(), endTime = 0L;
         RequestConfig.Builder builder = RequestConfig.custom();
@@ -161,12 +162,65 @@ public class NetworkUtil {
         try (CloseableHttpClient httpClient = httpClientBuilder.setConnectionManager(getHttpClientConnectionManager()).build()) {
             CloseableHttpResponse response = httpClient.execute(request);
             return EntityUtils.toString(response.getEntity(), "UTF-8");
-        } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException | IOException | ParseException e) {
+        } catch (IOException | ParseException e) {
             endTime = System.currentTimeMillis();
             log.error("{} {} {}", urlString, endTime - startTime, e.getMessage());
         }
         return null;
     }
+
+    public static int getCode(String urlString, String localIp, HttpHost proxy, Integer timeout) {
+        return getCode(urlString, localIp, proxy, timeout, null);
+    }
+
+    public static int getCode(String urlString, String localIp, HttpHost proxy, Integer timeout, Map<String, String> headers) {
+        long startTime = System.currentTimeMillis(), endTime = 0L;
+        RequestConfig.Builder builder = RequestConfig.custom();
+        if (proxy != null) {
+            builder.setProxy(proxy);
+        }
+        // 设置Cookie策略
+        builder.setCookieSpec("standard");
+        if (timeout != null) {
+            // 设置从connect Manager(连接池)获取Connection 超时时间
+            builder.setConnectionRequestTimeout(Timeout.ofMilliseconds(timeout))
+                    // 设置连接超时时间，单位毫秒
+                    .setConnectTimeout(Timeout.ofMilliseconds(timeout));
+        }
+        RequestConfig config = builder.build();
+        HttpGet request = new HttpGet(urlString);
+        if (null == headers) {
+            headers = defaultHeaderMap;
+        }
+        for (String key : headers.keySet()) {
+            //设置请求头，将爬虫伪装成浏览器
+            request.addHeader(key, headers.get(key));
+        }
+        request.setConfig(config);
+        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+        if (timeout != null) {
+            // 手动设置Keep-Alive
+            httpClientBuilder.setKeepAliveStrategy((response, context) -> Timeout.ofMilliseconds(timeout));
+        }
+        InetAddress localAddress = getLocalAddress(localIp);
+        if (localAddress != null) {
+            httpClientBuilder.setRoutePlanner(new DefaultRoutePlanner(DefaultSchemePortResolver.INSTANCE) {
+                @SneakyThrows
+                @Override
+                protected InetAddress determineLocalAddress(final HttpHost firstHop, final HttpContext context) {
+                    return localAddress;
+                }
+            });
+        }
+        try (CloseableHttpClient httpClient = httpClientBuilder.setConnectionManager(getHttpClientConnectionManager()).build()) {
+            return httpClient.execute(request).getCode();
+        } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException | IOException e) {
+            endTime = System.currentTimeMillis();
+            log.error("{} {} {}", urlString, endTime - startTime, e.getMessage());
+        }
+        return -1;
+    }
+
 
     private static HttpClientConnectionManager getHttpClientConnectionManager() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         return PoolingHttpClientConnectionManagerBuilder.create()
@@ -200,4 +254,5 @@ public class NetworkUtil {
             return null;
         }
     }
+
 }

@@ -1,6 +1,5 @@
 package com.chqiuu.proxy.runner;
 
-import com.chqiuu.proxy.modules.pool.service.ProxyIpService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -14,12 +13,8 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class CommandLineRunnerImpl implements CommandLineRunner {
 
-    private final ProxyIpService proxyIpService;
-
     @Override
     public void run(String... args) throws Exception {
         log.info("启动时自动执行 CommandLineRunner 的 run 方法");
-        // proxyIpService.saveBatchProxyIp();
-        proxyIpService.validateBatch();
     }
 }

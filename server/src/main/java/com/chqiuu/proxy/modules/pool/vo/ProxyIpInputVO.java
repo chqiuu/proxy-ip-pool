@@ -109,12 +109,12 @@ public class ProxyIpInputVO implements Serializable{
     @ApiModelProperty(value = "校验可用次数")
     private Integer availableCount;
     /**
-     * 校验不可用次数 `un_available_count` int(11)  COMMENT 校验不可用次数
+     * 校验不可用次数 `unavailable_count` int(11)  COMMENT 校验不可用次数
      */
     @NotNull(message = "校验不可用次数不能为空", groups = Default.class)
     @Max(value = Integer.MAX_VALUE, message = "校验不可用次数不能超过{value}", groups = Default.class)
     @ApiModelProperty(value = "校验不可用次数")
-    private Integer unAvailableCount;
+    private Integer unavailableCount;
     /**
      * 失效时间 `failure_time` datetime  COMMENT 失效时间
      */
@@ -167,7 +167,7 @@ public class ProxyIpInputVO implements Serializable{
         entity.setLastValidateTime(lastValidateTime);
         entity.setValidateCount(validateCount);
         entity.setAvailableCount(availableCount);
-        entity.setUnAvailableCount(unAvailableCount);
+        entity.setUnavailableCount(unavailableCount);
         entity.setFailureTime(failureTime);
         entity.setUseTimes(useTimes);
         entity.setAvailableRate(availableRate);

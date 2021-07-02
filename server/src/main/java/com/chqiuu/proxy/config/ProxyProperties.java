@@ -30,6 +30,10 @@ public class ProxyProperties {
      * local-ip
      */
     private String localIp;
+    /**
+     * 请求超时时长限制（单位：毫秒）
+     */
+    private Integer requestTimeout = 2000;
 
     public ProxyProperties() {
         ApplicationHome h = new ApplicationHome(getClass());

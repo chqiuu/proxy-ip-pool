@@ -43,19 +43,30 @@ public interface ProxyIpService extends IService<ProxyIpEntity> {
      */
     IPage<ProxyIpListDTO> getPage(ProxyIpPageQuery query);
 
-    void saveBatchProxyIp();
-    void saveBatchProxyIp(List<ProxyIp> proxyIps);
     /**
-     * 代理IP批量校验，删除无用IP
+     * 批量下载代理IP
      */
-    void validateBatch();
+    void batchUpdateProxyIp();
 
     /**
-     * 代理IP批量校验，删除无用IP
+     * 批量保存代理IP到数据库
      *
-     * @param entities 实体类列表
+     * @param proxyIps 代理IP列表
      */
-    void validateBatch(List<ProxyIpEntity> entities);
+    void saveBatchProxyIp(List<ProxyIp> proxyIps);
 
+    /**
+     * 批量监测新增代理IP的有效性
+     */
+    void batchValidateNewsProxyIp();
 
+    /**
+     * 批量监测当前可使用的代理IP有效性
+     */
+    void batchValidateAvailableProxyIp();
+
+    /**
+     * 批量监测当前不可使用的代理IP有效性
+     */
+    void batchValidateUnavailableProxyIp();
 }

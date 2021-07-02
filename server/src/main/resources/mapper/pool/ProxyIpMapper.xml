@@ -4,13 +4,13 @@
     <!-- 代理IP 表名：`proxy_ip` -->
     <sql id="Base_Column_List">
         `proxy_id`
-        ,`ip_address`,`ip_port`,`country`,`location`,`https`,`http`,`anonymity`,`available`,`last_validate_time`,`validate_count`,`available_count`,`un_available_count`,`failure_time`,`use_times`,`available_rate`,`use_size`,`fail_size`,`create_time`,`update_time`
+        ,`ip_address`,`ip_port`,`country`,`location`,`https`,`http`,`anonymity`,`available`,`last_validate_time`,`validate_count`,`available_count`,`unavailable_count`,`failure_time`,`use_times`,`available_rate`,`use_size`,`fail_size`,`create_time`,`update_time`
     </sql>
     <sql id="Base_PI_Column_List">
         pi
         .
         `proxy_id`
-        ,pi.`ip_address`,pi.`ip_port`,pi.`country`,pi.`location`,pi.`https`,pi.`http`,pi.`anonymity`,pi.`available`,pi.`last_validate_time`,pi.`validate_count`,pi.`available_count`,pi.`un_available_count`,pi.`failure_time`,pi.`use_times`,pi.`available_rate`,pi.`use_size`,pi.`fail_size`,pi.`create_time`,pi.`update_time`
+        ,pi.`ip_address`,pi.`ip_port`,pi.`country`,pi.`location`,pi.`https`,pi.`http`,pi.`anonymity`,pi.`available`,pi.`last_validate_time`,pi.`validate_count`,pi.`available_count`,pi.`unavailable_count`,pi.`failure_time`,pi.`use_times`,pi.`available_rate`,pi.`use_size`,pi.`fail_size`,pi.`create_time`,pi.`update_time`
     </sql>
 
     <!-- 可根据自己的需求，是否要使用 -->
@@ -27,7 +27,7 @@
         <result property="lastValidateTime" column="last_validate_time"/>
         <result property="validateCount" column="validate_count"/>
         <result property="availableCount" column="available_count"/>
-        <result property="unAvailableCount" column="un_available_count"/>
+        <result property="unavailableCount" column="unavailable_count"/>
         <result property="failureTime" column="failure_time"/>
         <result property="useTimes" column="use_times"/>
         <result property="availableRate" column="available_rate"/>
@@ -82,8 +82,8 @@
         <if test="query.availableCount != null ">
             AND pi.`available_count` = #{query.availableCount}
         </if>
-        <if test="query.unAvailableCount != null ">
-            AND pi.`un_available_count` = #{query.unAvailableCount}
+        <if test="query.unavailableCount != null ">
+            AND pi.`unavailable_count` = #{query.unavailableCount}
         </if>
         <if test="query.failureTime != null ">
             AND pi.`failure_time` = #{query.failureTime}
@@ -162,8 +162,8 @@
         <if test="query.availableCount != null ">
             AND pi.`available_count` = #{query.availableCount}
         </if>
-        <if test="query.unAvailableCount != null ">
-            AND pi.`un_available_count` = #{query.unAvailableCount}
+        <if test="query.unavailableCount != null ">
+            AND pi.`unavailable_count` = #{query.unavailableCount}
         </if>
         <if test="query.failureTime != null ">
             AND pi.`failure_time` = #{query.failureTime}
@@ -209,15 +209,7 @@
         update `proxy_ip` set `last_validate_time`=NOW()
         ,`validate_count`=`validate_count`+#{validateCount}
         ,`available_count`=`available_count`+#{availableCount}
-        ,`un_available_count`=`un_available_count`+#{unAvailableCount}
+        ,`unavailable_count`=`unavailable_count`+#{unavailableCount}
         where `proxy_id` = #{proxyId}
     </update>
-
-    <!--获取需要校验的代理IP DAY minute-->
-    <select id="getValidateProxys" resultType="com.chqiuu.proxy.modules.pool.entity.ProxyIpEntity">
-        SELECT
-        <include refid="Base_PI_Column_List"/>
-        FROM `proxy_ip` AS pi WHERE (`validate_count` <![CDATA[ < ]]> #{maxTestCount} OR pi.`last_validate_time`
-        <![CDATA[ < ]]> DATE_SUB(NOW(), INTERVAL 1 DAY)) ORDER BY `available` DESC
-    </select>
 </mapper>

@@ -101,10 +101,10 @@ public class ProxyIpPageQuery implements Serializable{
     @ApiModelProperty(value = "校验可用次数")
     private Integer availableCount;
     /**
-     * 校验不可用次数 `un_available_count` int(11)  COMMENT 校验不可用次数
+     * 校验不可用次数 `unavailable_count` int(11)  COMMENT 校验不可用次数
      */
     @ApiModelProperty(value = "校验不可用次数")
-    private Integer unAvailableCount;
+    private Integer unavailableCount;
     /**
      * 失效时间 `failure_time` datetime  COMMENT 失效时间
      */

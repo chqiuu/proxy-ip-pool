@@ -1,13 +1,11 @@
 package com.chqiuu.proxy.modules.pool.dto;
 
-import java.io.Serializable;
-import java.util.Date;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.LocalDate;
 
 /**
  * 代理IP录入信息
@@ -82,10 +80,10 @@ public class ProxyIpListDTO implements Serializable{
     @ApiModelProperty(value = "校验可用次数")
     private Integer availableCount;
     /**
-     * 校验不可用次数 `un_available_count` int(11)  COMMENT 校验不可用次数
+     * 校验不可用次数 `unavailable_count` int(11)  COMMENT 校验不可用次数
      */
     @ApiModelProperty(value = "校验不可用次数")
-    private Integer unAvailableCount;
+    private Integer unavailableCount;
     /**
      * 失效时间 `failure_time` datetime  COMMENT 失效时间
      */
