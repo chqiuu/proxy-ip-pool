@@ -86,11 +86,11 @@ public class ProxyIpManagerImpl implements ProxyIpManager {
             updateEntity.setFailureTime(LocalDateTime.now());
         } else {
             updateEntity.setAvailable(true);
+            updateEntity.setFailureTime(null);
         }
         updateEntity.setLastValidateTime(LocalDateTime.now());
         this.proxyIpMapper.updateById(updateEntity);
         endTime = System.currentTimeMillis();
-        log.debug("{}, {} = {} + {}, TimeMillis={} ", entity.getProxyId(), validateCount, availableCount, unavailableCount, endTime - startTime);
+        log.info("{}, {} = {} + {}, TimeMillis={} ", entity.getProxyId(), validateCount, availableCount, unavailableCount, endTime - startTime);
     }
-
 }
