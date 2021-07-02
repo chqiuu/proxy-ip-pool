@@ -1,5 +1,6 @@
 package com.chqiuu.proxy.downloader;
 
+import cn.hutool.core.util.StrUtil;
 import com.chqiuu.proxy.downloader.model.ProxyIp;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -93,7 +94,7 @@ public class Ip3366ProxyIpDownloader extends ProxyIpDownloader {
                 }
                 proxyIp.setAvailable(true);
             }
-            if (proxyIp.getIpAddress() != null) {
+            if (StrUtil.isNotEmpty(proxyIp.getIpAddress()) && proxyIp.getIpPort() != null) {
                 proxyIp.setProxyId(String.format("%s:%s", proxyIp.getIpAddress(), proxyIp.getIpPort()));
                 proxyIp.setDataSources(PROXY_DOCMAIN);
                 proxyIps.add(proxyIp);

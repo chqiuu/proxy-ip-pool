@@ -90,7 +90,7 @@ public class ProxyIpManagerImpl implements ProxyIpManager {
         updateEntity.setLastValidateTime(LocalDateTime.now());
         this.proxyIpMapper.updateById(updateEntity);
         endTime = System.currentTimeMillis();
-        log.info("{}, {} = {} + {}, TimeMillis={} ", entity.getProxyId(), validateCount, availableCount, unavailableCount, endTime - startTime);
+        log.debug("{}, {} = {} + {}, TimeMillis={} ", entity.getProxyId(), validateCount, availableCount, unavailableCount, endTime - startTime);
     }
 
 }

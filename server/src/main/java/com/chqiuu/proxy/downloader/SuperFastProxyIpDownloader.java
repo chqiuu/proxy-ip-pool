@@ -1,5 +1,6 @@
 package com.chqiuu.proxy.downloader;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.chqiuu.proxy.common.util.NetworkUtil;
@@ -83,7 +84,7 @@ public class SuperFastProxyIpDownloader extends ProxyIpDownloader {
             proxyIp.setHttp(true);
             proxyIp.setCountry(row.getString("country"));
             proxyIp.setLocation(row.getString("country"));
-            if (proxyIp.getIpPort() != null) {
+            if (StrUtil.isNotEmpty(proxyIp.getIpAddress()) && proxyIp.getIpPort() != null) {
                 proxyIp.setAvailable(true);
                 proxyIp.setProxyId(String.format("%s:%s", proxyIp.getIpAddress(), proxyIp.getIpPort()));
                 proxyIp.setDataSources(PROXY_DOCMAIN);

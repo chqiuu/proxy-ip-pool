@@ -100,7 +100,7 @@ public class IhuanProxyIpDownloader extends ProxyIpDownloader {
                 } catch (NumberFormatException ignored) {
                 }
             }
-            if (proxyIp.getIpAddress() != null) {
+            if (StrUtil.isNotEmpty(proxyIp.getIpAddress()) && proxyIp.getIpPort() != null) {
                 proxyIp.setProxyId(String.format("%s:%s", proxyIp.getIpAddress(), proxyIp.getIpPort()));
                 proxyIp.setDataSources(PROXY_DOCMAIN);
                 proxyIps.add(proxyIp);

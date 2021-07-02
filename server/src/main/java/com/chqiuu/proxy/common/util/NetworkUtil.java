@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.DefaultHttpRequestRetryStrategy;
 import org.apache.hc.client5.http.impl.DefaultSchemePortResolver;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
@@ -19,6 +20,7 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.protocol.HttpContext;
 import org.apache.hc.core5.ssl.SSLContexts;
 import org.apache.hc.core5.ssl.TrustStrategy;
+import org.apache.hc.core5.util.TimeValue;
 import org.apache.hc.core5.util.Timeout;
 
 import javax.net.ssl.SSLContext;
@@ -149,6 +151,8 @@ public class NetworkUtil {
             // 手动设置Keep-Alive
             httpClientBuilder.setKeepAliveStrategy((response, context) -> Timeout.ofMilliseconds(timeout));
         }
+        // 连接失败后重试次数
+        httpClientBuilder.setRetryStrategy(new DefaultHttpRequestRetryStrategy(0, TimeValue.ofSeconds(1)));
         InetAddress localAddress = getLocalAddress(localIp);
         if (localAddress != null) {
             httpClientBuilder.setRoutePlanner(new DefaultRoutePlanner(DefaultSchemePortResolver.INSTANCE) {
@@ -164,7 +168,7 @@ public class NetworkUtil {
             return EntityUtils.toString(response.getEntity(), "UTF-8");
         } catch (IOException | ParseException e) {
             endTime = System.currentTimeMillis();
-            log.error("{} {} {}", urlString, endTime - startTime, e.getMessage());
+            log.error("{} {} {} {}", urlString, proxy, endTime - startTime, e.getMessage());
         }
         return null;
     }

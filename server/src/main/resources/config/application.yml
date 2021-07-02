@@ -1,5 +1,5 @@
 spring:
   profiles:
-    #active: dev
-    active: dev-home
+    active: dev
+    #active: dev-home
 

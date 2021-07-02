@@ -114,7 +114,7 @@ public class XiaosuProxyIpDownloader extends ProxyIpDownloader {
                     proxyIp.setAnonymity("高匿名".equals(matcher.group(4)));
                     proxyIp.setLocation(matcher.group(5));
                 }
-                if (proxyIp.getIpAddress() != null) {
+                if (StrUtil.isNotEmpty(proxyIp.getIpAddress()) && proxyIp.getIpPort() != null) {
                     proxyIp.setProxyId(String.format("%s:%s", proxyIp.getIpAddress(), proxyIp.getIpPort()));
                     proxyIp.setDataSources(PROXY_DOCMAIN);
                     proxyIps.add(proxyIp);

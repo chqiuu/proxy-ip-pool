@@ -103,9 +103,7 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
             proxyIpManager.validateNewsProxyIp(proxyIpEntity, testUrls.size() > MAX_TEST_URL_COUNT ? testUrls.subList(0, MAX_TEST_URL_COUNT) : testUrls);
         });
         // 当前线程活动线程数大于零时阻塞等待线程执行完成
-        while (validateNewsProxyIpAsyncExecutor.getActiveCount() > 0) {
-            // 获取当前线程池状态，同时达到延时效果
-            validateNewsProxyIpAsyncExecutor.getThreadPoolExecutor().awaitTermination(1, TimeUnit.SECONDS);
+        while (!validateNewsProxyIpAsyncExecutor.getThreadPoolExecutor().awaitTermination(1, TimeUnit.SECONDS) && validateNewsProxyIpAsyncExecutor.getActiveCount() > 0) {
             log.debug("NewTask 线程池没有关闭 taskCount:{},completedTaskCount:{},activeCount:{}"
                     , validateNewsProxyIpAsyncExecutor.getThreadPoolExecutor().getTaskCount()
                     , validateNewsProxyIpAsyncExecutor.getThreadPoolExecutor().getCompletedTaskCount()
@@ -130,9 +128,7 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
             proxyIpManager.validateAvailableProxyIp(proxyIpEntity, testUrls.size() > MAX_TEST_URL_COUNT ? testUrls.subList(0, MAX_TEST_URL_COUNT) : testUrls);
         });
         // 当前线程活动线程数大于零时阻塞等待线程执行完成
-        while (validateAvailableProxyIpAsyncExecutor.getActiveCount() > 0) {
-            // 获取当前线程池状态，同时达到延时效果
-            validateAvailableProxyIpAsyncExecutor.getThreadPoolExecutor().awaitTermination(1, TimeUnit.SECONDS);
+        while (!validateAvailableProxyIpAsyncExecutor.getThreadPoolExecutor().awaitTermination(1, TimeUnit.SECONDS) && validateAvailableProxyIpAsyncExecutor.getActiveCount() > 0) {
             log.debug("AvailableTask 线程池没有关闭 taskCount:{},completedTaskCount:{},activeCount:{}"
                     , validateAvailableProxyIpAsyncExecutor.getThreadPoolExecutor().getTaskCount()
                     , validateAvailableProxyIpAsyncExecutor.getThreadPoolExecutor().getCompletedTaskCount()
@@ -157,9 +153,7 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
             proxyIpManager.validateUnavailableProxyIp(proxyIpEntity, testUrls.size() > MAX_TEST_URL_COUNT ? testUrls.subList(0, MAX_TEST_URL_COUNT) : testUrls);
         });
         // 当前线程活动线程数大于零时阻塞等待线程执行完成
-        while (validateUnavailableProxyIpAsyncExecutor.getActiveCount() > 0) {
-            // 获取当前线程池状态，同时达到延时效果
-            validateUnavailableProxyIpAsyncExecutor.getThreadPoolExecutor().awaitTermination(1, TimeUnit.SECONDS);
+        while (!validateUnavailableProxyIpAsyncExecutor.getThreadPoolExecutor().awaitTermination(1, TimeUnit.SECONDS) && validateUnavailableProxyIpAsyncExecutor.getActiveCount() > 0) {
             log.debug("UnavailableTask 线程池没有关闭 taskCount:{},completedTaskCount:{},activeCount:{}"
                     , validateUnavailableProxyIpAsyncExecutor.getThreadPoolExecutor().getTaskCount()
                     , validateUnavailableProxyIpAsyncExecutor.getThreadPoolExecutor().getCompletedTaskCount()
