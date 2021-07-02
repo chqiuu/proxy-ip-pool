@@ -152,9 +152,9 @@ public class AsyncConfig {
         // 定义线程池
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
         // 核心线程数
-        taskExecutor.setCorePoolSize(processors * 2);
+        taskExecutor.setCorePoolSize(processors * 4);
         // 线程池最大线程数,默认：40000
-        taskExecutor.setMaxPoolSize(processors * 3);
+        taskExecutor.setMaxPoolSize(processors * 6);
         // 线程队列最大线程数,默认：80000
         taskExecutor.setQueueCapacity(processors * 10000);
         // 线程名称前缀

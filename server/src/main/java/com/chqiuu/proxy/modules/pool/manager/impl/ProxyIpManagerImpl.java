@@ -58,7 +58,7 @@ public class ProxyIpManagerImpl implements ProxyIpManager {
             String html = NetworkUtil.get(testUrls.get(validateCount), proxyProperties.getLocalIp(), proxy, proxyProperties.getRequestTimeout());
             // 单次请求结束时间
             requestEndTime = System.currentTimeMillis();
-            if (StrUtil.isNotEmpty(html) && StrUtil.isNotEmpty(Jsoup.parse(html).select("#articleContentId").text()) && proxyProperties.getRequestTimeout() >= requestEndTime) {
+            if (StrUtil.isNotEmpty(html) && StrUtil.isNotEmpty(Jsoup.parse(html).select("#articleContentId").text())) {
                 // 代理IP连接成功
                 availableCount++;
                 useTimes = useTimes + (requestEndTime - requestStartTime);
