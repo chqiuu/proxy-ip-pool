@@ -26,9 +26,9 @@ public class ProxyScheduledTask {
     /**
      * 定时下载最新的代理IP任务
      * <p>
-     * 执行频率，每次启动项目后固定频率执行 1小时
+     * 执行频率，每天更新一次
      */
-    @Scheduled(initialDelay = 1000, fixedDelay = 3600000)
+    @Scheduled(initialDelay = 1000, fixedDelay = 7200000)
     public void batchUpdateProxyIpTask() {
         log.info("开始执行下载最新的代理IP任务");
         proxyIpService.batchUpdateProxyIp();
