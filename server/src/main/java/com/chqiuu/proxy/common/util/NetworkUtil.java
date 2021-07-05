@@ -27,6 +27,7 @@ import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.IllegalCharsetNameException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -166,7 +167,7 @@ public class NetworkUtil {
         try (CloseableHttpClient httpClient = httpClientBuilder.setConnectionManager(getHttpClientConnectionManager()).build()) {
             CloseableHttpResponse response = httpClient.execute(request);
             return EntityUtils.toString(response.getEntity(), "UTF-8");
-        } catch (IOException | ParseException e) {
+        } catch (IOException | ParseException | IllegalCharsetNameException e) {
             endTime = System.currentTimeMillis();
             log.debug("{} {} {} {}", urlString, proxy, endTime - startTime, e.getMessage());
         }

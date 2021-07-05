@@ -46,7 +46,7 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
     private final ThreadPoolTaskExecutor validateNewsProxyIpAsyncExecutor;
     private final ThreadPoolTaskExecutor validateAvailableProxyIpAsyncExecutor;
     private final ThreadPoolTaskExecutor validateUnavailableProxyIpAsyncExecutor;
-    private final static int MAX_TEST_URL_COUNT = 4;
+    private final static int MAX_TEST_URL_COUNT = 2;
 
     @Override
     public ProxyIpDetailDTO getDetailById(String proxyId) {
@@ -115,7 +115,7 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
     public void batchValidateAvailableProxyIp() {
         QueryWrapper<ProxyIpEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.gt("validate_count", 0);
-        queryWrapper.gt("available_rate", 0);
+        queryWrapper.gt("available_rate", 0.5);
         queryWrapper.orderByAsc("last_validate_time");
         batchValidateAvailableProxyIp(this.baseMapper.selectList(queryWrapper));
     }
@@ -141,7 +141,7 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
     public void batchValidateUnavailableProxyIp() {
         QueryWrapper<ProxyIpEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.gt("validate_count", 0);
-        queryWrapper.eq("available_rate", 0);
+        queryWrapper.eq("available_rate", 0.5);
         queryWrapper.lt("DATEDIFF(NOW(), DATE_SUB(NOW(), interval 7 day))", 7);
         queryWrapper.orderByAsc("last_validate_time");
         batchValidateUnavailableProxyIp(this.baseMapper.selectList(queryWrapper));
