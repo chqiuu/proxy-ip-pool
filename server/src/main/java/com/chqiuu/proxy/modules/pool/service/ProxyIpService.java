@@ -3,6 +3,8 @@ package com.chqiuu.proxy.modules.pool.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chqiuu.proxy.downloader.model.ProxyIp;
+import com.chqiuu.proxy.modules.api.dto.ProxyIpCommonListDTO;
+import com.chqiuu.proxy.modules.api.query.ProxyIpCommonPageQuery;
 import com.chqiuu.proxy.modules.pool.dto.ProxyIpDetailDTO;
 import com.chqiuu.proxy.modules.pool.dto.ProxyIpListDTO;
 import com.chqiuu.proxy.modules.pool.entity.ProxyIpEntity;
@@ -44,6 +46,14 @@ public interface ProxyIpService extends IService<ProxyIpEntity> {
     IPage<ProxyIpListDTO> getPage(ProxyIpPageQuery query);
 
     /**
+     * 代理IP分页查询（开放接口）
+     *
+     * @param query 分页查询对象
+     * @return 代理IP列表（带分页）
+     */
+    IPage<ProxyIpCommonListDTO> getCommonPage(ProxyIpCommonPageQuery query);
+
+    /**
      * 批量下载代理IP
      */
     void batchUpdateProxyIp();
@@ -69,4 +79,5 @@ public interface ProxyIpService extends IService<ProxyIpEntity> {
      * 批量监测当前不可使用的代理IP有效性
      */
     void batchValidateUnavailableProxyIp();
+
 }

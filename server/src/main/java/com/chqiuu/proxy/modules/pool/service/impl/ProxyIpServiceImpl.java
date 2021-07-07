@@ -8,6 +8,7 @@ import com.chqiuu.proxy.common.util.NetworkUtil;
 import com.chqiuu.proxy.config.ProxyProperties;
 import com.chqiuu.proxy.downloader.*;
 import com.chqiuu.proxy.downloader.model.ProxyIp;
+import com.chqiuu.proxy.modules.api.dto.ProxyIpCommonListDTO;
 import com.chqiuu.proxy.modules.pool.dto.ProxyIpDetailDTO;
 import com.chqiuu.proxy.modules.pool.dto.ProxyIpListDTO;
 import com.chqiuu.proxy.modules.pool.entity.ProxyIpEntity;
@@ -16,6 +17,7 @@ import com.chqiuu.proxy.modules.pool.mapper.ProxyIpMapper;
 import com.chqiuu.proxy.modules.pool.query.ProxyIpListQuery;
 import com.chqiuu.proxy.modules.pool.query.ProxyIpPageQuery;
 import com.chqiuu.proxy.modules.pool.service.ProxyIpService;
+import com.chqiuu.proxy.modules.api.query.ProxyIpCommonPageQuery;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +48,7 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
     private final ThreadPoolTaskExecutor validateNewsProxyIpAsyncExecutor;
     private final ThreadPoolTaskExecutor validateAvailableProxyIpAsyncExecutor;
     private final ThreadPoolTaskExecutor validateUnavailableProxyIpAsyncExecutor;
-    private final static int MAX_TEST_URL_COUNT = 2;
+    private final static int MAX_TEST_URL_COUNT = 6;
 
     @Override
     public ProxyIpDetailDTO getDetailById(String proxyId) {
@@ -62,6 +64,12 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
     public IPage<ProxyIpListDTO> getPage(ProxyIpPageQuery query) {
         Page<ProxyIpListDTO> pageInfo = new Page<>(query.getCurrent(), query.getSize());
         return this.baseMapper.getPage(pageInfo, query);
+    }
+
+    @Override
+    public IPage<ProxyIpCommonListDTO> getCommonPage(ProxyIpCommonPageQuery query) {
+        Page<ProxyIpListDTO> pageInfo = new Page<>(query.getCurrent(), query.getSize());
+        return this.baseMapper.getCommonPage(pageInfo, query);
     }
 
     @Override
@@ -115,7 +123,7 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
     public void batchValidateAvailableProxyIp() {
         QueryWrapper<ProxyIpEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.gt("validate_count", 0);
-        queryWrapper.gt("available_rate", 0.5);
+        queryWrapper.isNull("failure_time");
         queryWrapper.orderByAsc("last_validate_time");
         batchValidateAvailableProxyIp(this.baseMapper.selectList(queryWrapper));
     }
@@ -141,8 +149,7 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
     public void batchValidateUnavailableProxyIp() {
         QueryWrapper<ProxyIpEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.gt("validate_count", 0);
-        queryWrapper.eq("available_rate", 0.5);
-        queryWrapper.lt("DATEDIFF(NOW(), DATE_SUB(NOW(), interval 7 day))", 7);
+        queryWrapper.le("DATEDIFF(NOW(),failure_time)", 7);
         queryWrapper.orderByAsc("last_validate_time");
         batchValidateUnavailableProxyIp(this.baseMapper.selectList(queryWrapper));
     }
@@ -171,7 +178,7 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
      */
     private List<String> getTestUrls() {
         List<String> urls = new ArrayList<>();
-        String body = NetworkUtil.get("https://blog.csdn.net/QIU176161650/article/list", proxyProperties.getLocalIp());
+        String body = NetworkUtil.get(String.format("https://blog.csdn.net/%s/article/list", proxyProperties.getCsdnUser()), proxyProperties.getLocalIp());
         Document document = Jsoup.parse(body);
         Elements articleElements = document.select("div.article-list > div > h4 > a");
         for (Element articleElement : articleElements) {

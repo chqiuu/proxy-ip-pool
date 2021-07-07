@@ -203,13 +203,51 @@
             </otherwise>
         </choose>
     </select>
-
-    <!--更新代理IP校验次数-->
-    <update id="addValidateCount">
-        update `proxy_ip` set `last_validate_time`=NOW()
-        ,`validate_count`=`validate_count`+#{validateCount}
-        ,`available_count`=`available_count`+#{availableCount}
-        ,`unavailable_count`=`unavailable_count`+#{unavailableCount}
-        where `proxy_id` = #{proxyId}
-    </update>
+    <!-- 代理IP API分页查询-->
+    <select id="getCommonPage" parameterType="com.chqiuu.proxy.modules.api.query.ProxyIpCommonPageQuery"
+            resultType="com.chqiuu.proxy.modules.api.dto.ProxyIpCommonListDTO">
+        SELECT pi.`proxy_id`,pi.`ip_address`,pi.`ip_port`,pi.`location`,pi.`https`,pi.`http`,pi.`anonymity`,pi.`last_validate_time`,pi.`create_time`
+        FROM `proxy_ip` AS pi WHERE 1 = 1
+        <if test="query.https != null ">
+            AND pi.`https` = #{query.https}
+        </if>
+        <if test="query.http != null ">
+            AND pi.`http` = #{query.http}
+        </if>
+        <if test="query.anonymity != null ">
+            AND pi.`anonymity` = #{query.anonymity}
+        </if>
+        <choose>
+            <when test="query.sortParam=='proxyId'">
+                <choose>
+                    <when test="query.sortord=='asc'">
+                        ORDER BY pi.`proxy_id` asc
+                    </when>
+                    <otherwise>
+                        ORDER BY pi.`proxy_id` desc
+                    </otherwise>
+                </choose>
+            </when>
+            <when test="query.sortParam=='lastValidateTime'">
+                <choose>
+                    <when test="query.sortord=='asc'">
+                        ORDER BY pi.`last_validate_time` asc
+                    </when>
+                    <otherwise>
+                        ORDER BY pi.`last_validate_time` desc
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                <choose>
+                    <when test="query.sortord=='asc'">
+                        ORDER BY pi.`create_time` asc
+                    </when>
+                    <otherwise>
+                        ORDER BY pi.`create_time` desc
+                    </otherwise>
+                </choose>
+            </otherwise>
+        </choose>
+    </select>
 </mapper>

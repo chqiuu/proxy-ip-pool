@@ -58,10 +58,10 @@ public class ProxyIpManagerImpl implements ProxyIpManager {
             String html = NetworkUtil.get(testUrls.get(validateCount), proxyProperties.getLocalIp(), proxy, proxyProperties.getRequestTimeout());
             // 单次请求结束时间
             requestEndTime = System.currentTimeMillis();
+            useTimes = useTimes + (requestEndTime - requestStartTime);
             if (StrUtil.isNotEmpty(html) && StrUtil.isNotEmpty(Jsoup.parse(html).select("#articleContentId").text())) {
                 // 代理IP连接成功
                 availableCount++;
-                useTimes = useTimes + (requestEndTime - requestStartTime);
             } else {
                 unavailableCount++;
                 validateCount++;
@@ -78,12 +78,12 @@ public class ProxyIpManagerImpl implements ProxyIpManager {
             updateEntity.setAvailableRate(updateEntity.getAvailableCount() * 1.00 / updateEntity.getValidateCount());
         }
         updateEntity.setUseTimes(useTimes);
-        if (updateEntity.getAvailableCount() > 0) {
-            updateEntity.setAvgUseTimes(useTimes / updateEntity.getAvailableCount());
+        if (updateEntity.getValidateCount() > 0) {
+            updateEntity.setAvgUseTimes(useTimes / updateEntity.getValidateCount());
         }
         if (validateCount > 0 && validateCount <= unavailableCount) {
             updateEntity.setAvailable(false);
-            updateEntity.setFailureTime(LocalDateTime.now());
+            updateEntity.setFailureTime(entity.getFailureTime() == null ? LocalDateTime.now() : entity.getFailureTime());
         } else {
             updateEntity.setAvailable(true);
             updateEntity.setFailureTime(null);
@@ -91,6 +91,6 @@ public class ProxyIpManagerImpl implements ProxyIpManager {
         updateEntity.setLastValidateTime(LocalDateTime.now());
         this.proxyIpMapper.updateById(updateEntity);
         endTime = System.currentTimeMillis();
-        log.info("{}, {} = {} + {}, TimeMillis={} ", entity.getProxyId(), validateCount, availableCount, unavailableCount, endTime - startTime);
+        log.info("{}, {} = {} + {}, TimeMillis={}, LastValidateTime={} ", entity.getProxyId(), validateCount, availableCount, unavailableCount, endTime - startTime, entity.getLastValidateTime());
     }
 }

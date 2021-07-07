@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.chqiuu.proxy</groupId>
     <artifactId>proxy-ip-pool</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>proxy-ip-pool</name>
     <description>Demo project for Spring Boot</description>
     <properties>

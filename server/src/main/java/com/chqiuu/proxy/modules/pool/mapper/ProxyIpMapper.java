@@ -1,11 +1,13 @@
 package com.chqiuu.proxy.modules.pool.mapper;
 
+import com.chqiuu.proxy.modules.api.dto.ProxyIpCommonListDTO;
 import com.chqiuu.proxy.modules.pool.query.ProxyIpListQuery;
 import com.chqiuu.proxy.modules.pool.query.ProxyIpPageQuery;
 import com.chqiuu.proxy.modules.pool.entity.ProxyIpEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.chqiuu.proxy.modules.pool.dto.ProxyIpDetailDTO;
 import com.chqiuu.proxy.modules.pool.dto.ProxyIpListDTO;
+import com.chqiuu.proxy.modules.api.query.ProxyIpCommonPageQuery;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -66,13 +68,11 @@ public interface ProxyIpMapper extends BaseMapper<ProxyIpEntity> {
     IPage<ProxyIpListDTO> getPage(@Param("pg") Page<ProxyIpListDTO> pageInfo, @Param("query") ProxyIpPageQuery query);
 
     /**
-     * 更新代理IP校验次数
+     * 代理IP API分页查询
      *
-     * @param proxyId          唯一ID
-     * @param validateCount    校验次数
-     * @param availableCount   校验可用次数
-     * @param unavailableCount 校验不可用次数
+     * @param pageInfo 分页控件
+     * @param query    分页查询对象
+     * @return 代理IP列表
      */
-    void addValidateCount(@Param("proxyId") String proxyId, @Param("validateCount") int validateCount
-            , @Param("availableCount") int availableCount, @Param("unavailableCount") int unavailableCount);
+    IPage<ProxyIpCommonListDTO> getCommonPage(@Param("pg") Page<ProxyIpListDTO> pageInfo, @Param("query") ProxyIpCommonPageQuery query);
 }

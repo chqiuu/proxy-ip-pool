@@ -34,6 +34,10 @@ public class ProxyProperties {
      * 请求超时时长限制（单位：毫秒）
      */
     private Integer requestTimeout = 3000;
+    /**
+     * CSDN 用户名
+     */
+    private String csdnUser;
 
     public ProxyProperties() {
         ApplicationHome h = new ApplicationHome(getClass());
