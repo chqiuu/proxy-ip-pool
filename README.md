@@ -23,3 +23,33 @@
 |高可用全球免费代理库 | ☆ | https://ip.jiangxianli.com/ | |
 |米扑代理 | ☆ | https://proxy.mimvp.com/freesecret | |
 |Pzzqz | ☆ | https://pzzqz.com/ | |
+
+# 数据库表结构
+
+```mysql
+CREATE TABLE `proxy_ip` (
+  `proxy_id` varchar(30) NOT NULL COMMENT '唯一ID',
+  `ip_address` varchar(255) NOT NULL COMMENT 'IP地址',
+  `ip_port` int(11) NOT NULL COMMENT 'IP端口',
+  `data_sources` varchar(255) DEFAULT NULL COMMENT '数据来源',
+  `country` varchar(255) DEFAULT NULL COMMENT '国家',
+  `location` varchar(255) DEFAULT NULL COMMENT '位置',
+  `https` tinyint(4) DEFAULT '0' COMMENT '支持https',
+  `http` tinyint(4) DEFAULT '0' COMMENT '支持http',
+  `anonymity` tinyint(4) DEFAULT '0' COMMENT '匿名性',
+  `available` tinyint(4) DEFAULT '0' COMMENT '可用性',
+  `last_validate_time` datetime DEFAULT NULL COMMENT '最近校验时间',
+  `validate_count` int(11) DEFAULT '0' COMMENT '校验次数',
+  `available_count` int(11) DEFAULT '0' COMMENT '校验可用次数',
+  `unavailable_count` int(11) DEFAULT '0' COMMENT '校验不可用次数',
+  `failure_time` datetime DEFAULT NULL COMMENT '失效时间',
+  `use_times` bigint(20) DEFAULT '0' COMMENT '代理请求需要总时长',
+  `avg_use_times` bigint(20) DEFAULT '0' COMMENT '代理请求需要平均时长',
+  `available_rate` double(6,4) DEFAULT '0.0000' COMMENT '可用率',
+  `use_size` int(11) unsigned DEFAULT '0' COMMENT '使用次数',
+  `fail_size` int(11) unsigned DEFAULT '0' COMMENT '失败次数',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`proxy_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='代理IP表';
+```

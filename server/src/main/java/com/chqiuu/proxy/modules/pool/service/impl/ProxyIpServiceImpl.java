@@ -1,5 +1,6 @@
 package com.chqiuu.proxy.modules.pool.service.impl;
 
+import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -48,7 +49,7 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
     private final ThreadPoolTaskExecutor validateNewsProxyIpAsyncExecutor;
     private final ThreadPoolTaskExecutor validateAvailableProxyIpAsyncExecutor;
     private final ThreadPoolTaskExecutor validateUnavailableProxyIpAsyncExecutor;
-    private final static int MAX_TEST_URL_COUNT = 6;
+    private final static int MAX_TEST_URL_COUNT = 2;
 
     @Override
     public ProxyIpDetailDTO getDetailById(String proxyId) {
@@ -104,7 +105,7 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
 
     @SneakyThrows
     private void batchValidateNewsProxyIp(List<ProxyIpEntity> entities) {
-        List<String> testUrls = getTestUrls();
+        List<String> testUrls = getTestUrls(null, 1);
         entities.forEach(proxyIpEntity -> {
             // 打乱顺序
             Collections.shuffle(testUrls);
@@ -130,7 +131,7 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
 
     @SneakyThrows
     private void batchValidateAvailableProxyIp(List<ProxyIpEntity> entities) {
-        List<String> testUrls = getTestUrls();
+        List<String> testUrls = getTestUrls(null, 1);
         entities.forEach(proxyIpEntity -> {
             // 打乱顺序
             Collections.shuffle(testUrls);
@@ -156,7 +157,7 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
 
     @SneakyThrows
     private void batchValidateUnavailableProxyIp(List<ProxyIpEntity> entities) {
-        List<String> testUrls = getTestUrls();
+        List<String> testUrls = getTestUrls(null, 1);
         entities.forEach(proxyIpEntity -> {
             // 打乱顺序
             Collections.shuffle(testUrls);
@@ -174,15 +175,33 @@ public class ProxyIpServiceImpl extends ServiceImpl<ProxyIpMapper, ProxyIpEntity
     /**
      * 获取测试URL列表
      *
-     * @return
+     * @param page
+     * @return URL列表
      */
-    private List<String> getTestUrls() {
-        List<String> urls = new ArrayList<>();
-        String body = NetworkUtil.get(String.format("https://blog.csdn.net/%s/article/list", proxyProperties.getCsdnUser()), proxyProperties.getLocalIp());
+    private List<String> getTestUrls(List<String> urls, int page) {
+        if (null == urls) {
+            urls = new ArrayList<>();
+        }
+        String urlTemplate = "https://blog.csdn.net/%s/article/list/%s";
+        String body = NetworkUtil.get(String.format(urlTemplate, proxyProperties.getCsdnUser(), page), proxyProperties.getLocalIp());
         Document document = Jsoup.parse(body);
-        Elements articleElements = document.select("div.article-list > div > h4 > a");
+        Elements articleElements = document.select("div.article-list > div");
         for (Element articleElement : articleElements) {
-            urls.add(articleElement.attr("href"));
+            int readCount = 0;
+            if (NumberUtil.isNumber(articleElement.selectFirst("div.info-box > p > span:nth-child(2)").text())) {
+                readCount = Integer.parseInt(articleElement.selectFirst("div.info-box > p > span:nth-child(2)").text());
+            }
+            if (readCount < 10000) {
+                urls.add(articleElement.selectFirst("h4 > a").attr("href"));
+            }
+        }
+        if (page == 1) {
+            int articleTotal = Integer.parseInt(document.selectFirst("#container-header-blog").attr("data-num"));
+            int totalPage = (articleTotal - 1) / 40 + 1;
+            int startPage = 2;
+            for (int i = startPage; i <= totalPage; i++) {
+                urls.addAll(getTestUrls(null, i));
+            }
         }
         return urls;
     }
